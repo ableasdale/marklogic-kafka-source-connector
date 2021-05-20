@@ -54,11 +54,12 @@ public class MarkLogicSourceConfig extends AbstractConfig {
 	private static final String TOPIC_CONFIG_DOC = "Kafka topic to publish source MarkLogic data to";
 
 	public static ConfigDef CONFIG_DEF = new ConfigDef()
+			// Essential configuration
 			.define(CONNECTION_HOST, Type.STRING, Importance.HIGH, CONNECTION_HOST_DOC)
 			.define(CONNECTION_PORT, Type.INT, Importance.HIGH, CONNECTION_PORT_DOC)
 			.define(CONNECTION_USER, Type.STRING, Importance.HIGH, CONNECTION_USER_DOC)
 			.define(CONNECTION_PASSWORD, Type.STRING, Importance.HIGH, CONNECTION_PASSWORD_DOC)
-
+			// Has defaults
 			.define(BATCH_SIZE, Type.INT, BATCH_SIZE_DEFAULT, Importance.MEDIUM, BATCH_SIZE_DOC)
 			.define(MAX_RETRIES, Type.INT, MAX_RETRIES_DEFAULT, Importance.MEDIUM, MAX_RETRIES_DOC)
 			.define(RETRY_BACKOFF_MS, Type.INT, RETRY_BACKOFF_MS_DEFAULT, Importance.MEDIUM, RETRY_BACKOFF_MS_DOC)
