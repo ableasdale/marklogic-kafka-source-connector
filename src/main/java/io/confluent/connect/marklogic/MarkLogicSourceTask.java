@@ -20,6 +20,7 @@ import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.DatabaseClientFactory;
 import com.marklogic.client.datamovement.DataMovementManager;
 import com.marklogic.client.datamovement.QueryBatcher;
+import com.marklogic.client.document.DocumentManager;
 import com.marklogic.client.query.StructuredQueryBuilder;
 import com.marklogic.client.query.StructuredQueryDefinition;
 import org.apache.kafka.connect.source.SourceRecord;
@@ -34,6 +35,15 @@ import java.util.Map;
 public class MarkLogicSourceTask extends SourceTask {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    protected DatabaseClient client;
+    DocumentManager documentManager;
+    private int timeout;
+    private Map<String, String> config;
+    private int maxRetires;
+    private int remainingRetries;
+    private int batchSize;
+    //private BufferedRecords bufferedRecords;
+    private DataMovementManager dataMovementManager;
 
     @Override
     public void start(final Map<String, String> config) {
@@ -41,13 +51,14 @@ public class MarkLogicSourceTask extends SourceTask {
         LOG.info("***    MarkLogicSourceTask - start called   ***");
         LOG.info("***********************************************");
 
+        LOG.info ("* * * * MarkLogic : do we ever get here? *");
         // first attempt - try to do EVERYTHING in start!
-
+/*
         DatabaseClient client = DatabaseClientFactory.newClient("localhost", 8000, "Meters",
                 new DatabaseClientFactory.DigestAuthContext("admin", "admin"));
 
         LOG.info("*** MARKLOGIC SOURCE CONNECTOR :: Client created: "+client.getDatabase());
-        /*
+
         // Generate a full and-query (to get every URI)
         StructuredQueryDefinition sqd = new StructuredQueryBuilder().and();
 
