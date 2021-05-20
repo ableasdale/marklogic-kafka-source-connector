@@ -23,12 +23,18 @@ import com.marklogic.client.datamovement.QueryBatcher;
 import com.marklogic.client.document.DocumentManager;
 import com.marklogic.client.query.StructuredQueryBuilder;
 import com.marklogic.client.query.StructuredQueryDefinition;
+import com.marklogic.xcc.ContentSource;
+import com.marklogic.xcc.ContentSourceFactory;
+import com.marklogic.xcc.Session;
+import com.marklogic.xcc.exceptions.RequestException;
+import com.marklogic.xcc.exceptions.XccConfigException;
 import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -51,14 +57,34 @@ public class MarkLogicSourceTask extends SourceTask {
         LOG.info("***    MarkLogicSourceTask - start called   ***");
         LOG.info("***********************************************");
 
-        LOG.info ("* * * * MarkLogic : do we ever get here? *");
-        // first attempt - try to do EVERYTHING in start!
+        LOG.info("*** Does this still die? ***");
+
+        /*
+        try {
+            ContentSource cs = ContentSourceFactory.newContentSource(URI.create("xcc://admin:admin@host.docker.internal:800/Meters"));
+            Session s = cs.newSession();
+            LOG.info("MarkLogicSourceTask: current MarkLogic Timestamp: "+s.getCurrentServerPointInTime());
+        } catch (RequestException | XccConfigException e) {
+            LOG.info("MarkLogicSourceTask: Execption Caught: ",e);
+        } */
 /*
+        DatabaseClient client = DatabaseClientFactory.newClient("host.docker.internal", 8000, "Meters",
+                new DatabaseClientFactory.DigestAuthContext("admin", "admin"));
+
+        LOG.info("*** MARKLOGIC SOURCE CONNECTOR :: Client created: "+client.getDatabase());
+*/
+        // host.docker.internal
+
+        // first attempt - try to do EVERYTHING in start!
+
+        /* TODO - this seems to die as soon as I try to instantiate the client
         DatabaseClient client = DatabaseClientFactory.newClient("localhost", 8000, "Meters",
                 new DatabaseClientFactory.DigestAuthContext("admin", "admin"));
 
         LOG.info("*** MARKLOGIC SOURCE CONNECTOR :: Client created: "+client.getDatabase());
 
+         */
+/*
         // Generate a full and-query (to get every URI)
         StructuredQueryDefinition sqd = new StructuredQueryBuilder().and();
 

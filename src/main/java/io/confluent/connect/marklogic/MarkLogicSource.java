@@ -16,6 +16,8 @@
  */
 package io.confluent.connect.marklogic;
 
+import com.marklogic.client.DatabaseClient;
+import com.marklogic.client.DatabaseClientFactory;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.source.SourceConnector;
@@ -65,7 +67,15 @@ public class MarkLogicSource extends SourceConnector {
         topic = "marklogic";
         batchSize = 100;
         numTasks =1;
+
+        /*
+        DatabaseClient client = DatabaseClientFactory.newClient("host.docker.internal", 8000, "Meters",
+                new DatabaseClientFactory.DigestAuthContext("admin", "admin"));
+
+        LOG.info("*** MARKLOGIC SOURCE CONNECTOR :: Client created: "+client.getDatabase());
+        */
     }
+
 
     @Override
     public void stop() {

@@ -33,3 +33,15 @@ docker compose up -d
 
 Open the Confluent Control Center: http://localhost:9021
 
+Sample (Minimal) configuration settings:
+
+```
+{
+  "name": "MarkLogicSourceConnector_0",
+  "connector.class": "io.confluent.connect.marklogic.MarkLogicSource",
+  "ml.connection.host": "localhost",
+  "ml.connection.port": "8000",
+  "ml.connection.user": "admin",
+  "ml.connection.password": "admin"
+}
+```

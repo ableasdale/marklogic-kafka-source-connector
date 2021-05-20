@@ -18,6 +18,8 @@ dependencies {
     implementation 'io.github.rburgst:okhttp-digest:2.5'
     implementation group: 'com.marklogic', name: 'marklogic-client-api', version: '5.4.0'
     implementation group: 'org.apache.kafka', name: 'connect-api', version: '2.6.0'
+    // https://mvnrepository.com/artifact/com.marklogic/marklogic-xcc
+    implementation group: 'com.marklogic', name: 'marklogic-xcc', version: '10.0.6.2'
 }
 
 test {
