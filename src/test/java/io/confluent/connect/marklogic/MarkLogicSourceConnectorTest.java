@@ -22,7 +22,6 @@ import java.util.Map;
 public class MarkLogicSourceConnectorTest extends EasyMockSupport {
 
     private static final String SINGLE_TOPIC = "test";
-    private static final String HOSTNAME = "marklogic";
 
     private MarkLogicSource connector;
     private ConnectorContext ctx;
@@ -36,7 +35,8 @@ public class MarkLogicSourceConnectorTest extends EasyMockSupport {
 
         sourceProperties = new HashMap<>();
         sourceProperties.put(MarkLogicSourceConfig.TOPIC_CONFIG, SINGLE_TOPIC);
-        sourceProperties.put(MarkLogicSourceConfig.CONNECTION_HOST, HOSTNAME);
+        sourceProperties.put(MarkLogicSourceConfig.CONNECTION_HOST, MarkLogicSourceConfig.CONNECTION_HOST_DEFAULT);
+        sourceProperties.put(MarkLogicSourceConfig.CONNECTION_PORT, Integer.toString(MarkLogicSourceConfig.CONNECTION_PORT_DEFAULT));
     }
 
     @Test
