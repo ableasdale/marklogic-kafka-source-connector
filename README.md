@@ -1,6 +1,26 @@
-## MarkLogic Kafka Source Connector
+# MarkLogic Kafka Source Connector
 
 _Please note this is in early stages of development_
+
+## Prerequisites
+
+The source MarkLogic database requires:
+- A range index on the **prop:last-modified** properties element to query for changes since the connector last ran
+- The database-level **maintain last modified** property to be set to **true**
+
+Both of these can be configured by running the following XQuery (note this uses the **Documents** database as an example):
+
+```xquery
+import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic/admin.xqy";
+
+declare variable $CONFIG := admin:get-configuration();
+declare variable $DATABASE-ID := xdmp:database("Documents");
+
+let $CONFIG := admin:database-set-maintain-last-modified($CONFIG, $DATABASE-ID, fn:true())
+let $CONFIG := admin:database-add-range-element-index($CONFIG, $DATABASE-ID, admin:database-range-element-index("dateTime", "http://marklogic.com/xdmp/property", "last-modified", (), fn:false() ))
+return
+admin:save-configuration($CONFIG)
+```
 
 At the top level of this project is a slightly modified **docker-compose.yml** file; this file maps a local machine directory `~/connectors` into the container for Connect to use:
 
