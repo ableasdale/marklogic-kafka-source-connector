@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'io.confluent'
-version '0.0.1c'
+version '0.0.1d'
 
 repositories {
     jcenter()

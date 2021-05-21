@@ -24,16 +24,24 @@ import org.apache.kafka.connect.source.SourceConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static io.confluent.connect.marklogic.MarkLogicSourceConfig.CONFIG_DEF;
 import static java.util.Collections.singletonList;
 
 public class MarkLogicSource extends SourceConnector {
 
-    public static final String MARKLOGIC_CONNECTOR_VERSION = "0.0.1PRE-C";
+    public static final String MARKLOGIC_CONNECTOR_VERSION = "0.0.1PRE";
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     // fixme - hard coded for now in order to make the connector flow work
@@ -52,7 +60,6 @@ public class MarkLogicSource extends SourceConnector {
 
     @Override
     public void start(final Map<String, String> props) {
-        LOG.info("*************** MarkLogic Source Connector 2 is STARTING *************");
         LOG.info("***********************************************");
         LOG.info("*** MarkLogicSourceConnector: start called  ***");
         LOG.info("MarkLogicSourceConnector - Properties File Size: "+props.size());
@@ -68,12 +75,21 @@ public class MarkLogicSource extends SourceConnector {
         batchSize = 100;
         numTasks =1;
 
-        /*
-        DatabaseClient client = DatabaseClientFactory.newClient("host.docker.internal", 8000, "Meters",
-                new DatabaseClientFactory.DigestAuthContext("admin", "admin"));
-
-        LOG.info("*** MARKLOGIC SOURCE CONNECTOR :: Client created: "+client.getDatabase());
-        */
+        // simplest possible test - unauthenticated HTTP connection to the MarkLogic healthcheck probe
+        try {
+            URL url = new URL("http://marklogic:7997");
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            LOG.info("MarkLogicSourceConnector: Healthcheck HTTP response: "+con.getResponseMessage());
+            LOG.info("MarkLogicSourceConnector: Healthcheck HTTP response code: "+con.getResponseCode());
+            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String responseBody = br.lines().collect(Collectors.joining());
+            LOG.info("MarkLogicSourceConnector: Healthcheck HTTP Response Body: "+ responseBody);
+        } catch (ProtocolException | MalformedURLException e) {
+            LOG.error("MarkLogic HealthCheck Probe failed: ",e);
+        } catch (IOException e) {
+            LOG.error("MarkLogic HealthCheck Probe failed with an IOException: ",e);
+        }
     }
 
 

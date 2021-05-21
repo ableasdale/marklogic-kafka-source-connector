@@ -61,32 +61,16 @@ public class MarkLogicSourceTask extends SourceTask {
         LOG.info("***  MarkLogicSourceTask - start() called   ***");
         LOG.info("***********************************************");
 
-        // simplest possible test - unauthenticated HTTP connection to the MarkLogic healthcheck probe
+        // Second simple probe - Can an XDBC Session be created and the MarkLogic Timestamp be returned?
         try {
-            URL url = new URL("http://marklogic:7997");
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-            LOG.info("Healthcheck HTTP response: "+con.getResponseMessage());
-            LOG.info("Healthcheck HTTP response code: "+con.getResponseCode());
-            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String responseBody = br.lines().collect(Collectors.joining());
-            LOG.info("Healthcheck HTTP Response Body: "+ responseBody);
-        } catch (ProtocolException | MalformedURLException e) {
-            LOG.error("MarkLogic HealthCheck Probe failed: ",e);
-        } catch (IOException e) {
-            LOG.error("MarkLogic HealthCheck Probe failed with an IOException: ",e);
-        }
-
-        LOG.info("*** MarkLogicSourceTask :: Does this still die now or do we see this message? ***");
-
-        /*
-        try {
-            ContentSource cs = ContentSourceFactory.newContentSource(URI.create("xcc://admin:admin@localhost:8000/Meters"));
+            ContentSource cs = ContentSourceFactory.newContentSource(URI.create("xcc://admin:admin@marklogic:8000/Meters"));
             Session s = cs.newSession();
             LOG.info("*** MarkLogicSourceTask: current MarkLogic Timestamp: "+s.getCurrentServerPointInTime());
         } catch (RequestException | XccConfigException e) {
             LOG.info("MarkLogicSourceTask: Exception Caught: ",e);
-        } */
+        }
+
+        LOG.info("*** MarkLogicSourceTask :: Does this still die now or do we see this message? ***");
 
         /*
         try {
