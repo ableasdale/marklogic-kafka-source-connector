@@ -16,8 +16,6 @@
  */
 package io.confluent.connect.marklogic;
 
-import com.marklogic.client.DatabaseClient;
-import com.marklogic.client.DatabaseClientFactory;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.source.SourceConnector;
@@ -62,33 +60,33 @@ public class MarkLogicSource extends SourceConnector {
     public void start(final Map<String, String> props) {
         LOG.info("***********************************************");
         LOG.info("*** MarkLogicSourceConnector: start called  ***");
-        LOG.info("MarkLogicSourceConnector - Properties File Size: "+props.size());
+        LOG.info("MarkLogicSourceConnector - Properties File Size: " + props.size());
         StringBuilder sb = new StringBuilder();
         sb.append("MarkLogic Source Connector Properties:\n");
         for (Map.Entry<?, ?> entry : props.entrySet()) {
             sb.append(entry.getKey()).append(" : ").append(entry.getValue()).append("\n");
         }
-        LOG.info(""+sb.toString());
+        LOG.info("" + sb.toString());
         LOG.info("***********************************************");
         properties = props;
         topic = "marklogic";
         batchSize = 100;
-        numTasks =1;
+        numTasks = 1;
 
-        // simplest possible test - unauthenticated HTTP connection to the MarkLogic healthcheck probe
+        // simplest possible test - perform an unauthenticated HTTP connection to the MarkLogic healthcheck probe
         try {
             URL url = new URL("http://marklogic:7997");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-            LOG.info("MarkLogicSourceConnector: Healthcheck HTTP response: "+con.getResponseMessage());
-            LOG.info("MarkLogicSourceConnector: Healthcheck HTTP response code: "+con.getResponseCode());
+            LOG.info("MarkLogicSourceConnector: Healthcheck HTTP response: " + con.getResponseMessage());
+            LOG.info("MarkLogicSourceConnector: Healthcheck HTTP response code: " + con.getResponseCode());
             BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String responseBody = br.lines().collect(Collectors.joining());
-            LOG.info("MarkLogicSourceConnector: Healthcheck HTTP Response Body: "+ responseBody);
+            LOG.info("MarkLogicSourceConnector: Healthcheck HTTP Response Body: " + responseBody);
         } catch (ProtocolException | MalformedURLException e) {
-            LOG.error("MarkLogic HealthCheck Probe failed: ",e);
+            LOG.error("MarkLogic HealthCheck Probe failed: ", e);
         } catch (IOException e) {
-            LOG.error("MarkLogic HealthCheck Probe failed with an IOException: ",e);
+            LOG.error("MarkLogic HealthCheck Probe failed with an IOException: ", e);
         }
     }
 
