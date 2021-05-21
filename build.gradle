@@ -51,12 +51,12 @@ task copyConnectorJar(type: Copy) {
     dependsOn = [buildConnectorJar]
     description = "Copies the jar into the Connector directory"
     from "build/libs"
-    into "/Users/ableasdale/connectors/marklogic-source-connector/"
+    into System.getProperty("user.home")+"/connectors/marklogic-source-connector/"
 }
 
 task clearConnectorDirectory(type: Delete) {
     group = 'MarkLogic Souce Connector'
-    delete "/Users/ableasdale/connectors/marklogic-source-connector/"
+    delete System.getProperty("user.home")+"/connectors/marklogic-source-connector/"
 }
 
 def ordered(String... dependencyPaths) {

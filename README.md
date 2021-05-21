@@ -9,7 +9,7 @@ At the top level of this project is a slightly modified **docker-compose.yml** f
       - ~/connectors:/data/connectors
 ```
 
-This directory should have a structure like this:
+The **connectors** directory (in your home directory) should have a structure like this:
 
 ```
 .
@@ -23,7 +23,7 @@ You may need to log-in to Docker Hub and checkout the MarkLogic Docker image on 
 
 https://hub.docker.com/_/marklogic
 
-And you may need to pull the latest MarkLogic image before you can use docker-compose:
+You may need to pull the latest MarkLogic Docker image before you can use `docker-compose`:
 
 ```
 docker pull store/marklogicdb/marklogic-server:10.0-6.2-dev-centos
@@ -31,9 +31,9 @@ docker pull store/marklogicdb/marklogic-server:10.0-6.2-dev-centos
 
 ## To Build the Connector 
 
-If you run the gradle task: `buildConnectorJar`
+If you run the gradle task: `buildConnectorJar`, this will create a jar in `build/libs`; copy the jar into the `connectors` directory.
 
-This will create a jar in `build/libs`; copy the jar into the `connectors` directory.
+If you run the gradle task: `copyConnectorJar`, this will clean, build the classes, assemble the project and copy the jar into the target directory.
 
 Finally, start up the docker containers; from the root directory of this project, run:
 
