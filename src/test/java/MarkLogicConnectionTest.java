@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestMarkLogicConnection {
+public class MarkLogicConnectionTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @Test
     public void MarkLogicHealthCheckTest(){
-        // simplest possible test - unauthenticated HTTP connection to the MarkLogic healthcheck probe
+        // Simplest possible test: an unauthenticated HTTP connection to the MarkLogic healthcheck probe to confirm MarkLogic is fully initialized and responding
         try {
             URL url = new URL("http://localhost:7997");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();

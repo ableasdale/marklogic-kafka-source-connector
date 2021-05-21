@@ -30,6 +30,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,7 +40,7 @@ import static java.util.Collections.singletonList;
 
 public class MarkLogicSource extends SourceConnector {
 
-    public static final String MARKLOGIC_CONNECTOR_VERSION = "0.0.1PRE";
+    public static final String MARKLOGIC_CONNECTOR_VERSION = "0.0.1-PRE";
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     // fixme - hard coded for now in order to make the connector flow work
@@ -59,30 +60,31 @@ public class MarkLogicSource extends SourceConnector {
     @Override
     public void start(final Map<String, String> props) {
         LOG.info("***********************************************");
-        LOG.info("*** MarkLogicSourceConnector: start called  ***");
-        LOG.info("MarkLogicSourceConnector - Properties File Size: " + props.size());
-        StringBuilder sb = new StringBuilder();
-        sb.append("MarkLogic Source Connector Properties:\n");
-        for (Map.Entry<?, ?> entry : props.entrySet()) {
-            sb.append(entry.getKey()).append(" : ").append(entry.getValue()).append("\n");
-        }
-        LOG.info("" + sb.toString());
+        LOG.info("***         MarkLogicSource: START          ***");
+        LOG.info("***********************************************");
+        LOG.info(String.format("*** Connector version: %s", MARKLOGIC_CONNECTOR_VERSION));
+        LOG.info(String.format("*** Properties Configured: %d", props.size()));
+        props.forEach((key, value) -> LOG.info(MessageFormat.format("*** {0} : {1} ", key, value)));
         LOG.info("***********************************************");
         properties = props;
         topic = "marklogic";
         batchSize = 100;
         numTasks = 1;
 
-        // simplest possible test - perform an unauthenticated HTTP connection to the MarkLogic healthcheck probe
+        // Simplest possible test: an unauthenticated HTTP connection to the MarkLogic healthcheck probe to confirm MarkLogic is fully initialized and responding
         try {
             URL url = new URL("http://marklogic:7997");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-            LOG.info("MarkLogicSourceConnector: Healthcheck HTTP response: " + con.getResponseMessage());
-            LOG.info("MarkLogicSourceConnector: Healthcheck HTTP response code: " + con.getResponseCode());
+            LOG.info("***********************************************");
+            LOG.info("***      MarkLogicSource: Healthcheck       ***");
+            LOG.info("***********************************************");
+            LOG.info(MessageFormat.format("*** Healthcheck HTTP response message: {0}", con.getResponseMessage()));
+            LOG.info(MessageFormat.format("*** Healthcheck HTTP response code: {0}", con.getResponseCode()));
             BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String responseBody = br.lines().collect(Collectors.joining());
-            LOG.info("MarkLogicSourceConnector: Healthcheck HTTP Response Body: " + responseBody);
+            LOG.info(MessageFormat.format("*** Healthcheck HTTP response body: {0}", responseBody));
+            LOG.info("***********************************************");
         } catch (ProtocolException | MalformedURLException e) {
             LOG.error("MarkLogic HealthCheck Probe failed: ", e);
         } catch (IOException e) {
@@ -94,7 +96,7 @@ public class MarkLogicSource extends SourceConnector {
     @Override
     public void stop() {
         LOG.info("***********************************************");
-        LOG.info("*** MarkLogicSourceConnector: stop called   ***");
+        LOG.info("***         MarkLogicSource: STOP           ***");
         LOG.info("***********************************************");
     }
 
