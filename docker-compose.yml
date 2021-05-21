@@ -183,19 +183,15 @@ services:
   marklogic:
     image: store/marklogicdb/marklogic-server:10.0-6.2-dev-centos
     container_name: marklogic
-    domainname: .
+    hostname: marklogic
+    domainname: marklogic
     environment:
       - MARKLOGIC_INIT=true
       - MARKLOGIC_ADMIN_USERNAME=admin
       - MARKLOGIC_ADMIN_PASSWORD=admin
-      - TZ=Europe/Prague
+      - TZ=Europe/London
     ports:
-      - 7997-8010:7997-8010
-    networks:
-      - external_net
-      - internal_net
-
-networks:
-  external_net: {}
-  internal_net:
-    internal: true
+      - "7997:7997"
+      - "8000:8000"
+      - "8001:8001"
+      - "8002:8002"

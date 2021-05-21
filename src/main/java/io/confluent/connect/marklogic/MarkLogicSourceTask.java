@@ -63,7 +63,7 @@ public class MarkLogicSourceTask extends SourceTask {
 
         // simplest possible test - unauthenticated HTTP connection to the MarkLogic healthcheck probe
         try {
-            URL url = new URL("http://localhost:7997");
+            URL url = new URL("http://marklogic:7997");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             LOG.info("Healthcheck HTTP response: "+con.getResponseMessage());
