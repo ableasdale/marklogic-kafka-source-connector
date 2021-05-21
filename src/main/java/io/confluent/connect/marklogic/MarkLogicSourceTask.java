@@ -84,7 +84,7 @@ public class MarkLogicSourceTask extends SourceTask {
                         LOG.info("URI: " + uri);
                     }
                 }
-        ).onQueryFailure(e -> LOG.error("Failure processing batch: ",e));
+        ).onQueryFailure(e -> LOG.error("Failure processing batch: ", e));
         // *** Step 4: Submit the DMSDK job ***
         dmm.startJob(batcher);
         // Wait for the job to complete, and then stop it.
@@ -99,6 +99,15 @@ public class MarkLogicSourceTask extends SourceTask {
         LOG.info("*** MarkLogicSourceTask - calling poll ***");
         // TODO - this will be a range query (prop:last-modified) eventually
         StructuredQueryDefinition sqd = new StructuredQueryBuilder().and();
+        /*
+  <cts:properties-fragment-query xmlns:cts="http://marklogic.com/cts">
+    <cts:element-range-query operator="&gt;">
+      <cts:element xmlns:prop="http://marklogic.com/xdmp/property">prop:last-modified</cts:element>
+      <cts:value xsi:type="xs:dateTime" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">2021-05-21T13:25:24.315485Z</cts:value>
+    </cts:element-range-query>
+  </cts:properties-fragment-query>
+
+         */
 
         DataMovementManager dmm = client.newDataMovementManager();
         QueryBatcher batcher = dmm.newQueryBatcher(sqd);
@@ -107,7 +116,7 @@ public class MarkLogicSourceTask extends SourceTask {
                         LOG.info("URI: " + uri);
                     }
                 }
-        ).onQueryFailure(e -> LOG.error("Failure processing batch: ",e));
+        ).onQueryFailure(e -> LOG.error("Failure processing batch: ", e));
         // *** Step 4: Submit the DMSDK job ***
         dmm.startJob(batcher);
         // Wait for the job to complete, and then stop it.

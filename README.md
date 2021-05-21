@@ -11,6 +11,8 @@ The source MarkLogic database requires:
 Both of these can be configured by running the following XQuery (note this uses the **Documents** database as an example):
 
 ```xquery
+xquery version "1.0-ml";
+
 import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic/admin.xqy";
 
 declare variable $CONFIG := admin:get-configuration();

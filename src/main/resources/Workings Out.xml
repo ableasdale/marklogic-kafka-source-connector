@@ -1,0 +1,25 @@
+<export><workspace name="Workings Out"><query name="Query 1" focus="false" listorder="1" taborder="1" active="true" database="11866527986938500572" server="5697925476987166305" database-name="Documents" server-name="App-Services" mode="xquery">xquery version "1.0-ml";
+
+(1 to 1000) ! xdmp:document-insert("/"||sem:uuid-string()||".xml", element random-id {sem:uuid-string()})</query><query name="Query 2" focus="false" listorder="2" taborder="2" active="true" database="11866527986938500572" server="5697925476987166305" database-name="Documents" server-name="App-Services" mode="xquery">xquery version "1.0-ml";
+
+import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic/admin.xqy";
+
+declare variable $CONFIG := admin:get-configuration();
+declare variable $DATABASE-ID := xdmp:database("Documents");
+
+let $CONFIG := admin:database-set-maintain-last-modified($CONFIG, $DATABASE-ID, fn:true())
+let $CONFIG := admin:database-add-range-element-index($CONFIG, $DATABASE-ID, admin:database-range-element-index("dateTime", "http://marklogic.com/xdmp/property", "last-modified", (), fn:false() ))
+return
+admin:save-configuration($CONFIG)</query><query name="Query 3" focus="false" listorder="3" taborder="3" active="true" database="11866527986938500572" server="5697925476987166305" database-name="Documents" server-name="App-Services" mode="xquery">xquery version "1.0-ml";
+
+doc() ! xdmp:document-delete(xdmp:node-uri(.))</query><query name="Query 4" focus="true" listorder="4" taborder="4" active="true" database="11866527986938500572" server="5697925476987166305" database-name="Documents" server-name="App-Services" mode="xquery">xquery version "1.0-ml";
+
+element x {
+  cts:properties-fragment-query(
+    cts:element-range-query(fn:QName("http://marklogic.com/xdmp/property","last-modified"), "&gt;", 
+    (fn:current-dateTime() - xs:dayTimeDuration("PT15M")) ))
+    }</query><query name="Query 5" focus="false" listorder="5" taborder="5" active="true" database="11866527986938500572" server="5697925476987166305" database-name="Documents" server-name="App-Services" mode="xquery">xquery version "1.0-ml";
+
+(fn:current-dateTime() - xs:dayTimeDuration("PT15M")) 
+</query><query name="Query 6" focus="false" listorder="6" taborder="6" active="true" database="11866527986938500572" server="5697925476987166305" database-name="Documents" server-name="App-Services" mode="xquery">xquery version "1.0-ml";
+fn:current-dateTime()</query></workspace></export>
