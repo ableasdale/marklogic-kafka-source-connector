@@ -33,7 +33,7 @@ import static java.util.Collections.singletonList;
 
 public class MarkLogicSource extends SourceConnector {
 
-    public static final String MARKLOGIC_CONNECTOR_VERSION = "0.0.1PRE-B";
+    public static final String MARKLOGIC_CONNECTOR_VERSION = "0.0.1PRE-C";
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     // fixme - hard coded for now in order to make the connector flow work
@@ -52,7 +52,7 @@ public class MarkLogicSource extends SourceConnector {
 
     @Override
     public void start(final Map<String, String> props) {
-        LOG.info("*************** MarkLogic Source Connector 1 is STARTING *************");
+        LOG.info("*************** MarkLogic Source Connector 2 is STARTING *************");
         LOG.info("***********************************************");
         LOG.info("*** MarkLogicSourceConnector: start called  ***");
         LOG.info("MarkLogicSourceConnector - Properties File Size: "+props.size());

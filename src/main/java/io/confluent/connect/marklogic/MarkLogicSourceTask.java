@@ -59,6 +59,14 @@ public class MarkLogicSourceTask extends SourceTask {
 
         LOG.info("*** Does this still die? ***");
 
+        try {
+            ContentSource cs = ContentSourceFactory.newContentSource(URI.create("xcc://admin:admin@localhost:8000/Meters"));
+            Session s = cs.newSession();
+            LOG.info("*** MarkLogicSourceTask: current MarkLogic Timestamp: "+s.getCurrentServerPointInTime());
+        } catch (RequestException | XccConfigException e) {
+            LOG.info("MarkLogicSourceTask: Exception Caught: ",e);
+        }
+
         /*
         try {
             ContentSource cs = ContentSourceFactory.newContentSource(URI.create("xcc://admin:admin@host.docker.internal:800/Meters"));
