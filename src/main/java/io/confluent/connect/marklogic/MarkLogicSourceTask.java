@@ -97,6 +97,22 @@ public class MarkLogicSourceTask extends SourceTask {
     @Override
     public List<SourceRecord> poll() throws InterruptedException {
         LOG.info("*** MarkLogicSourceTask - calling poll ***");
+        // TODO - this will be a range query (prop:last-modified) eventually
+        StructuredQueryDefinition sqd = new StructuredQueryBuilder().and();
+
+        DataMovementManager dmm = client.newDataMovementManager();
+        QueryBatcher batcher = dmm.newQueryBatcher(sqd);
+        batcher.onUrisReady(batch -> {
+                    for (String uri : batch.getItems()) {
+                        LOG.info("URI: " + uri);
+                    }
+                }
+        ).onQueryFailure(e -> LOG.error("Failure processing batch: ",e));
+        // *** Step 4: Submit the DMSDK job ***
+        dmm.startJob(batcher);
+        // Wait for the job to complete, and then stop it.
+        batcher.awaitCompletion();
+        dmm.stopJob(batcher);
         // fixme - just keeping this artifical sleep here to stop the log being filled with poll log messages
         Thread.sleep(10000);
         return null;
