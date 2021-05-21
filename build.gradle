@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'io.confluent'
-version '0.0.1d'
+version '0.0.1e'
 
 repositories {
     jcenter()
@@ -29,8 +29,17 @@ test {
     useJUnitPlatform()
 }
 
-//dependsOn(clean,assemble)
+/* Previously this built a usable Jar - although there were no dependencies included...
 task buildConnectorJar(type: Jar) {
+    baseName = 'marklogic-kafka-source-connector'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
+} */
+
+task buildConnectorJar(type: Jar) {
+    from sourceSets.main.output
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }
 }
