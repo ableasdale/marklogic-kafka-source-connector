@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'io.confluent'
-version '0.0.1e'
+version '0.0.1'
 
 repositories {
     jcenter()
@@ -16,7 +16,7 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 
     compileOnly group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-    compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
     compileOnly group: 'io.github.rburgst', name: 'okhttp-digest', version: '2.5'
     compileOnly group: 'org.apache.kafka', name: 'connect-api', version: '2.6.0'
 
@@ -31,15 +31,38 @@ test {
 
 /* Previously this built a usable Jar - although there were no dependencies included...
 task buildConnectorJar(type: Jar) {
-    baseName = 'marklogic-kafka-source-connector'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 } */
 
 task buildConnectorJar(type: Jar) {
+    group = 'MarkLogic Souce Connector'
+    dependsOn ordered(":clean", ":assemble")
+    dependsOn = [clean,assemble,jar]
     from sourceSets.main.output
     dependsOn configurations.runtimeClasspath
     from {
         configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
     }
+}
+
+task copyConnectorJar(type: Copy) {
+    group = 'MarkLogic Souce Connector'
+    dependsOn = [buildConnectorJar]
+    description = "Used for local development and testing; copies the jar into the Connector directory"
+    from "build/libs"
+    into "/Users/ableasdale/connectors/marklogic-source-connector/"
+}
+
+task clearConnectorDirectory(type: Delete) {
+    group = 'MarkLogic Souce Connector'
+    delete "/Users/ableasdale/connectors/marklogic-source-connector/"
+}
+
+def ordered(String... dependencyPaths) {
+    def dependencies = dependencyPaths.collect { tasks.getByPath(it) }
+    for (int i = 0; i < dependencies.size() - 1; i++) {
+        dependencies[i + 1].mustRunAfter(dependencies[i])
+    }
+    return dependencies
 }

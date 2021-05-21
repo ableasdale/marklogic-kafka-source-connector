@@ -26,7 +26,7 @@ import java.util.Map;
 public class MarkLogicSourceConfig extends AbstractConfig {
 
 	public static final String CONNECTION_HOST = "ml.connection.host";
-	private static final String CONNECTION_HOST_DOC = "MarkLogic hostname";
+	private static final String CONNECTION_HOST_DOC = "MarkLogic hostname (use marklogic if you're using Docker)";
 	
 	public static final String CONNECTION_PORT = "ml.connection.port";
     private static final String CONNECTION_PORT_DOC = "MarkLogic Application Server port";

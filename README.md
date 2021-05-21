@@ -2,7 +2,7 @@
 
 _Please note this is in early stages of development_
 
-At the top level is a slightly modified **docker-compose.yml** file; this file maps a local machine directory `~/connectors` into the container:
+At the top level of this project is a slightly modified **docker-compose.yml** file; this file maps a local machine directory `~/connectors` into the container for Connect to use:
 
 ```
     volumes:
@@ -43,8 +43,8 @@ docker compose up -d
 
 Ensure MarkLogic is completely initialised and that you can log in (admin/admin) to: 
 
-http://localhost:8001 (Admin GUI)
-http://localhost:8000 (Query Console / Default XDBC Source)
+ - http://localhost:8001 (Admin GUI)
+ - http://localhost:8000 (Query Console / Default XDBC Source)
 
 Open the Confluent Control Center: http://localhost:9021
 
