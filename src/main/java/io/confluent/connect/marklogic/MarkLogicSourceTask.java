@@ -33,10 +33,14 @@ import org.apache.kafka.connect.source.SourceTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
-import java.net.URI;
+import java.net.*;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MarkLogicSourceTask extends SourceTask {
 
@@ -54,18 +58,35 @@ public class MarkLogicSourceTask extends SourceTask {
     @Override
     public void start(final Map<String, String> config) {
         LOG.info("***********************************************");
-        LOG.info("***    MarkLogicSourceTask - start called   ***");
+        LOG.info("***  MarkLogicSourceTask - start() called   ***");
         LOG.info("***********************************************");
 
-        LOG.info("*** Does this still die? ***");
+        // simplest possible test - unauthenticated HTTP connection to the MarkLogic healthcheck probe
+        try {
+            URL url = new URL("http://localhost:7997");
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            LOG.info("Healthcheck HTTP response: "+con.getResponseMessage());
+            LOG.info("Healthcheck HTTP response code: "+con.getResponseCode());
+            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String responseBody = br.lines().collect(Collectors.joining());
+            LOG.info("Healthcheck HTTP Response Body: "+ responseBody);
+        } catch (ProtocolException | MalformedURLException e) {
+            LOG.error("MarkLogic HealthCheck Probe failed: ",e);
+        } catch (IOException e) {
+            LOG.error("MarkLogic HealthCheck Probe failed with an IOException: ",e);
+        }
 
+        LOG.info("*** MarkLogicSourceTask :: Does this still die now or do we see this message? ***");
+
+        /*
         try {
             ContentSource cs = ContentSourceFactory.newContentSource(URI.create("xcc://admin:admin@localhost:8000/Meters"));
             Session s = cs.newSession();
             LOG.info("*** MarkLogicSourceTask: current MarkLogic Timestamp: "+s.getCurrentServerPointInTime());
         } catch (RequestException | XccConfigException e) {
             LOG.info("MarkLogicSourceTask: Exception Caught: ",e);
-        }
+        } */
 
         /*
         try {
@@ -75,8 +96,9 @@ public class MarkLogicSourceTask extends SourceTask {
         } catch (RequestException | XccConfigException e) {
             LOG.info("MarkLogicSourceTask: Exception Caught: ",e);
         } */
-/*
-        DatabaseClient client = DatabaseClientFactory.newClient("host.docker.internal", 8000, "Meters",
+
+        /*
+        DatabaseClient client = DatabaseClientFactory.newClient("localhost", 8000, "Meters",
                 new DatabaseClientFactory.DigestAuthContext("admin", "admin"));
 
         LOG.info("*** MARKLOGIC SOURCE CONNECTOR :: Client created: "+client.getDatabase());
