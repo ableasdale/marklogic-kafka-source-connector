@@ -41,6 +41,7 @@ import java.util.Map;
 public class MarkLogicSourceTask extends SourceTask {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     protected DatabaseClient client;
     private int timeout;
     private Map<String, String> config;
@@ -71,8 +72,6 @@ public class MarkLogicSourceTask extends SourceTask {
 
         LOG.info("*** MARKLOGIC SOURCE CONNECTOR :: Client created: " + client.getDatabase());
 
-        LOG.info("*** MarkLogicSourceTask :: Does this still die now or do we see this message get logged? ***");
-
         // host.docker.internal
 
         // Test: Generate a full and-query (to get every URI) and log each
@@ -85,14 +84,14 @@ public class MarkLogicSourceTask extends SourceTask {
                         LOG.info("URI: " + uri);
                     }
                 }
-        )
-                .onQueryFailure(exception -> exception.printStackTrace());
+        ).onQueryFailure(e -> LOG.error("Failure processing batch: ",e));
         // *** Step 4: Submit the DMSDK job ***
         dmm.startJob(batcher);
         // Wait for the job to complete, and then stop it.
         batcher.awaitCompletion();
         dmm.stopJob(batcher);
 
+        LOG.info("*** MarkLogicSourceTask :: Do we see this message get logged? ***");
     }
 
     @Override

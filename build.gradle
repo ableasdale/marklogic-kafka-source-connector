@@ -49,7 +49,7 @@ task buildConnectorJar(type: Jar) {
 task copyConnectorJar(type: Copy) {
     group = 'MarkLogic Souce Connector'
     dependsOn = [buildConnectorJar]
-    description = "Used for local development and testing; copies the jar into the Connector directory"
+    description = "Copies the jar into the Connector directory"
     from "build/libs"
     into "/Users/ableasdale/connectors/marklogic-source-connector/"
 }
