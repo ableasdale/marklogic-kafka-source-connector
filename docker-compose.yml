@@ -178,3 +178,24 @@ services:
       KAFKA_REST_BOOTSTRAP_SERVERS: 'broker:29092'
       KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
       KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
+
+# TODO - in order for this to work, you need to first run docker pull store/marklogicdb/marklogic-server:10.0-6.2-dev-centos
+  marklogic:
+    image: store/marklogicdb/marklogic-server:10.0-6.2-dev-centos
+    container_name: marklogic
+    domainname: .
+    environment:
+      - MARKLOGIC_INIT=true
+      - MARKLOGIC_ADMIN_USERNAME=admin
+      - MARKLOGIC_ADMIN_PASSWORD=admin
+      - TZ=Europe/Prague
+    ports:
+      - 7997-8010:7997-8010
+    networks:
+      - external_net
+      - internal_net
+
+networks:
+  external_net: {}
+  internal_net:
+    internal: true
