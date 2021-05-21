@@ -8,6 +8,7 @@ services:
     ports:
       - "2181:2181"
     environment:
+      TZ: Europe/London
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
@@ -21,6 +22,7 @@ services:
       - "9092:9092"
       - "9101:9101"
     environment:
+      TZ: Europe/London
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
@@ -49,6 +51,7 @@ services:
     ports:
       - "8081:8081"
     environment:
+      TZ: Europe/London
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
@@ -65,6 +68,7 @@ services:
     volumes:
       - ~/connectors:/data/connectors
     environment:
+      TZ: Europe/London
       CONNECT_BOOTSTRAP_SERVERS: 'broker:29092'
       CONNECT_REST_ADVERTISED_HOST_NAME: connect
       CONNECT_REST_PORT: 8083
@@ -97,6 +101,7 @@ services:
     ports:
       - "9021:9021"
     environment:
+      TZ: Europe/London
       CONTROL_CENTER_BOOTSTRAP_SERVERS: 'broker:29092'
       CONTROL_CENTER_CONNECT_CLUSTER: 'connect:8083'
       CONTROL_CENTER_KSQL_KSQLDB1_URL: "http://ksqldb-server:8088"
@@ -125,3 +130,6 @@ services:
       - "8000:8000"
       - "8001:8001"
       - "8002:8002"
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
