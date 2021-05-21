@@ -65,7 +65,7 @@ public class MarkLogicSourceTask extends SourceTask {
             Session s = cs.newSession();
             LOG.info("MarkLogicSourceTask: current MarkLogic Timestamp: "+s.getCurrentServerPointInTime());
         } catch (RequestException | XccConfigException e) {
-            LOG.info("MarkLogicSourceTask: Execption Caught: ",e);
+            LOG.info("MarkLogicSourceTask: Exception Caught: ",e);
         } */
 /*
         DatabaseClient client = DatabaseClientFactory.newClient("host.docker.internal", 8000, "Meters",
