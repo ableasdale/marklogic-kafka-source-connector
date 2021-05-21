@@ -1,3 +1,5 @@
+package io.confluent.connect.marklogic;
+
 import com.marklogic.xcc.Session;
 import com.marklogic.xcc.exceptions.RequestException;
 import io.confluent.connect.marklogic.MarkLogicXccContentSourceProvider;

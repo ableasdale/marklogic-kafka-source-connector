@@ -12,11 +12,13 @@ repositories {
 
 dependencies {
 
+    testImplementation group: 'org.easymock', name: 'easymock', version: '4.3'
     testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 
+    testImplementation group: 'org.apache.kafka', name: 'connect-api', version: '2.6.0'
     compileOnly group: 'org.apache.kafka', name: 'connect-api', version: '2.6.0'
 
     implementation group: 'com.marklogic', name: 'marklogic-client-api', version: '5.4.0'

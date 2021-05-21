@@ -46,7 +46,6 @@ public class MarkLogicSource extends SourceConnector {
     // fixme - hard coded for now in order to make the connector flow work
     private int batchSize;
     private int numTasks;
-    private String filename;
     private String topic;
     private Map<String, String> settings;
     private Map<String, String> config;

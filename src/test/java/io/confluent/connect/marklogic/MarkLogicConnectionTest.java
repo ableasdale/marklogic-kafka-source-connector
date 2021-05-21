@@ -1,3 +1,5 @@
+package io.confluent.connect.marklogic;
+
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.DatabaseClientFactory;
 import com.marklogic.client.datamovement.DataMovementManager;
