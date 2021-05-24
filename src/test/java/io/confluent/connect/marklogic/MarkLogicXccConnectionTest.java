@@ -19,20 +19,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class MarkLogicXccConnectionTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private String ContentBase = "Security";
 
     @Test
     public void XccConnectionTest() {
-        Session s = MarkLogicXccContentSourceProvider.getSession("Meters");
+        Session s = MarkLogicXccContentSourceProvider.getSession(ContentBase);
         try {
-            LOG.debug(MessageFormat.format("Server Point in Time: {0}", s.getCurrentServerPointInTime()));
+            LOG.info(MessageFormat.format("Server Point in Time: {0}", s.getCurrentServerPointInTime()));
             assertEquals(StringUtils.left(s.getCurrentServerPointInTime().toString(), 4), StringUtils.left(String.valueOf(Instant.now().getEpochSecond()), 4));
-            assertEquals("Meters", s.getContentBaseName());
+            assertEquals(ContentBase, s.getContentBaseName());
             Request r = s.newAdhocQuery("cts:uris()");
             ResultSequence rs = s.submitRequest(r);
-            assertTrue(rs.size() > 1);
-            // LOG.debug(rs.asString());
+            assertTrue(rs.size() > 1700);
+            assertTrue(rs.resultItemAt(0).asString().startsWith("http://marklogic.com/xdmp/"));
             s.close();
-            assertTrue(s.getConnectionUri().toString().endsWith(":8000/Meters"));
+            assertTrue(s.getConnectionUri().toString().endsWith(":"+MarkLogicSourceConfig.CONNECTION_PORT_DEFAULT+"/"+ContentBase));
         } catch (RequestException e) {
             LOG.error("Exception: ", e);
         }

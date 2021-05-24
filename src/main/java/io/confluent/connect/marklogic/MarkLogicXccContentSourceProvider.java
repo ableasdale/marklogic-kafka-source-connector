@@ -1,15 +1,14 @@
 package io.confluent.connect.marklogic;
 
-import java.lang.invoke.MethodHandles;
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import com.marklogic.xcc.ContentSource;
 import com.marklogic.xcc.ContentSourceFactory;
 import com.marklogic.xcc.Session;
 import com.marklogic.xcc.exceptions.XccConfigException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.net.URI;
 
 /**
  * Base Provider Class for a MarkLogic Content Source Factory - a singleton
@@ -24,28 +23,31 @@ public class MarkLogicXccContentSourceProvider {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     ContentSource contentSource;
+    private static String uri;
 
     private MarkLogicXccContentSourceProvider() {
-        LOG.debug("Creating the MarkLogic ContentSource...");
         try {
-            // TODO - get the *configuration object* or use the defaults to remove these
-            URI uri = new URI(generateXdbcConnectionUri(MarkLogicSourceConfig.CONNECTION_USER_DEFAULT, MarkLogicSourceConfig.CONNECTION_PASSWORD_DEFAULT, MarkLogicSourceConfig.CONNECTION_HOST_DEFAULT, MarkLogicSourceConfig.CONNECTION_PORT_DEFAULT));
-            contentSource = ContentSourceFactory
-                    .newContentSource(uri);
-        } catch (URISyntaxException | XccConfigException e) {
-            LOG.error("Exception encountered: ",e);
+            if (uri == null) {
+                LOG.info("Creating the MarkLogic ContentSource using container-specific defaults (running in test mode)");
+                generateXdbcConnectionUri(MarkLogicSourceConfig.CONNECTION_USER_DEFAULT, MarkLogicSourceConfig.CONNECTION_PASSWORD_DEFAULT, MarkLogicSourceConfig.CONNECTION_HOST_DEFAULT, MarkLogicSourceConfig.CONNECTION_PORT_DEFAULT);
+            }
+            contentSource = ContentSourceFactory.newContentSource(URI.create(uri));
+        } catch (XccConfigException e) {
+            LOG.error("Exception encountered: ", e);
         }
 
     }
 
-    private String generateXdbcConnectionUri(String user, String pass, String host, int port) {
+    protected static void generateXdbcConnectionUri(String user, String pass, String host, String port) {
+        LOG.info("uri is currently set to: "+uri);
         StringBuilder sb = new StringBuilder();
         sb.append("xcc://").append(user).append(":")
                 .append(pass).append("@")
                 .append(host).append(":")
                 .append(port);
         LOG.debug(String.format("Conn: %s", sb));
-        return sb.toString();
+        LOG.info("uri will now be set to: "+sb);
+        uri = sb.toString();
     }
 
     private static class MarkLogicContentSourceProviderHolder {

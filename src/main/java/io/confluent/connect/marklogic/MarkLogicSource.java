@@ -58,13 +58,14 @@ public class MarkLogicSource extends SourceConnector {
 
     @Override
     public void start(final Map<String, String> props) {
-        LOG.info("***********************************************");
-        LOG.info("***         MarkLogicSource: START          ***");
-        LOG.info("***********************************************");
-        LOG.info(String.format("*** Connector version: %s", MARKLOGIC_CONNECTOR_VERSION));
-        LOG.info(String.format("*** Properties Configured: %d", props.size()));
+        MarkLogicXccContentSourceProvider.generateXdbcConnectionUri(props.get(MarkLogicSourceConfig.CONNECTION_USER), props.get(MarkLogicSourceConfig.CONNECTION_PASSWORD), props.get(MarkLogicSourceConfig.CONNECTION_HOST), props.get(MarkLogicSourceConfig.CONNECTION_PORT));
+        LOG.debug("***********************************************");
+        LOG.debug("***         MarkLogicSource: START          ***");
+        LOG.debug("***********************************************");
+        LOG.debug(String.format("*** Connector version: %s", MARKLOGIC_CONNECTOR_VERSION));
+        LOG.debug(String.format("*** Properties Configured: %d", props.size()));
         props.forEach((key, value) -> LOG.info(MessageFormat.format("*** {0} : {1} ", key, value)));
-        LOG.info("***********************************************");
+        LOG.debug("***********************************************");
         properties = props;
         topic = "marklogic";
         batchSize = 100;
@@ -72,7 +73,7 @@ public class MarkLogicSource extends SourceConnector {
 
         // Simplest possible test: an unauthenticated HTTP connection to the MarkLogic healthcheck probe to confirm MarkLogic is fully initialized and responding
         try {
-            URL url = new URL("http://marklogic:7997");
+            URL url = new URL(String.format("http://%s:7997", props.get(MarkLogicSourceConfig.CONNECTION_HOST)));
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             LOG.info("***********************************************");

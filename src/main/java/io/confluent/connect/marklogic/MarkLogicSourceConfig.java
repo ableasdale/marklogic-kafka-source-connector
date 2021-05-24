@@ -30,7 +30,7 @@ public class MarkLogicSourceConfig extends AbstractConfig {
 	private static final String CONNECTION_HOST_DOC = "MarkLogic hostname (use marklogic if you're using the docker-compose.yml file)";
 	
 	public static final String CONNECTION_PORT = "ml.connection.port";
-	protected static final int CONNECTION_PORT_DEFAULT = 8000;
+	protected static final String CONNECTION_PORT_DEFAULT = "8000";
     private static final String CONNECTION_PORT_DOC = "MarkLogic Application Server port";
 	
 	public static final String CONNECTION_USER = "ml.connection.user";
@@ -61,8 +61,8 @@ public class MarkLogicSourceConfig extends AbstractConfig {
 			// Essential configuration
 			.define(CONNECTION_HOST, Type.STRING, CONNECTION_HOST_DEFAULT, Importance.HIGH, CONNECTION_HOST_DOC)
 			.define(CONNECTION_PORT, Type.INT, CONNECTION_PORT_DEFAULT, Importance.HIGH, CONNECTION_PORT_DOC)
-			.define(CONNECTION_USER, Type.STRING, Importance.HIGH, CONNECTION_USER_DOC)
-			.define(CONNECTION_PASSWORD, Type.STRING, Importance.HIGH, CONNECTION_PASSWORD_DOC)
+			.define(CONNECTION_USER, Type.STRING, CONNECTION_USER_DEFAULT, Importance.HIGH, CONNECTION_USER_DOC)
+			.define(CONNECTION_PASSWORD, Type.STRING, CONNECTION_PASSWORD_DEFAULT, Importance.HIGH, CONNECTION_PASSWORD_DOC)
 			// Has defaults
 			.define(BATCH_SIZE, Type.INT, BATCH_SIZE_DEFAULT, Importance.MEDIUM, BATCH_SIZE_DOC)
 			.define(MAX_RETRIES, Type.INT, MAX_RETRIES_DEFAULT, Importance.MEDIUM, MAX_RETRIES_DOC)

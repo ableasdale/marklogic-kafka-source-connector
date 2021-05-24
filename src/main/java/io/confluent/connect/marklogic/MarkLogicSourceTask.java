@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -43,32 +44,28 @@ public class MarkLogicSourceTask extends SourceTask {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     protected DatabaseClient client;
-    private int timeout;
-    private Map<String, String> config;
-    private int maxRetires;
-    private int remainingRetries;
-    private int batchSize;
-    //private BufferedRecords bufferedRecords;
-    private DataMovementManager dataMovementManager;
+    protected ContentSource cs;
 
     @Override
     public void start(final Map<String, String> config) {
-        LOG.info("***********************************************");
-        LOG.info("***  MarkLogicSourceTask - start() called   ***");
-        LOG.info("***********************************************");
+        LOG.debug("***********************************************");
+        LOG.debug("***  MarkLogicSourceTask - start() called   ***");
+        LOG.debug(String.format("*** Source Task - Properties Configured: %d", config.size()));
+        config.forEach((key, value) -> LOG.debug(MessageFormat.format("*** {0} : {1} ", key, value)));
+        LOG.debug(String.format("MarkLogic Hostname: %s | MarkLogic Port: %s | MarkLogic Username: %s | MarkLogic Password: %s", config.get(MarkLogicSourceConfig.CONNECTION_HOST), config.get(MarkLogicSourceConfig.CONNECTION_PORT), config.get(MarkLogicSourceConfig.CONNECTION_USER), config.get(MarkLogicSourceConfig.CONNECTION_PASSWORD)));
+        LOG.debug("***********************************************");
 
         // Second simple probe - Can an XDBC Session be created and the MarkLogic Timestamp be returned?
         try {
-            ContentSource cs = ContentSourceFactory.newContentSource(URI.create("xcc://admin:admin@marklogic:8000/Meters"));
-            Session s = cs.newSession();
+            Session s = MarkLogicXccContentSourceProvider.getSession("Documents");
             LOG.info("*** MarkLogicSourceTask: current MarkLogic Timestamp: " + s.getCurrentServerPointInTime());
-        } catch (RequestException | XccConfigException e) {
+        } catch (RequestException e) {
             LOG.info("MarkLogicSourceTask: Exception Caught: ", e);
         }
 
         // Third simple probe - Can the Java Client API be used to connect to MarkLogic?
-        client = DatabaseClientFactory.newClient("marklogic", 8000, "Meters",
-                new DatabaseClientFactory.DigestAuthContext("admin", "admin"));
+        client = DatabaseClientFactory.newClient(config.get(MarkLogicSourceConfig.CONNECTION_HOST), Integer.parseInt(config.get(MarkLogicSourceConfig.CONNECTION_PORT)), "Meters",
+                new DatabaseClientFactory.DigestAuthContext(config.get(MarkLogicSourceConfig.CONNECTION_USER), config.get(MarkLogicSourceConfig.CONNECTION_PASSWORD)));
 
         LOG.info("*** MARKLOGIC SOURCE CONNECTOR :: Client created: " + client.getDatabase());
 
@@ -81,7 +78,7 @@ public class MarkLogicSourceTask extends SourceTask {
         QueryBatcher batcher = dmm.newQueryBatcher(sqd);
         batcher.onUrisReady(batch -> {
                     for (String uri : batch.getItems()) {
-                        LOG.info("URI: " + uri);
+                        LOG.debug("URI: " + uri);
                     }
                 }
         ).onQueryFailure(e -> LOG.error("Failure processing batch: ", e));
@@ -90,13 +87,17 @@ public class MarkLogicSourceTask extends SourceTask {
         // Wait for the job to complete, and then stop it.
         batcher.awaitCompletion();
         dmm.stopJob(batcher);
-
-        LOG.info("*** MarkLogicSourceTask :: Do we see this message get logged? ***");
     }
 
     @Override
     public List<SourceRecord> poll() throws InterruptedException {
         LOG.info("*** MarkLogicSourceTask - calling poll ***");
+        Session s = MarkLogicXccContentSourceProvider.getSession("Documents");
+        try {
+            LOG.info("*** MarkLogicSourceTask :: poll() - current MarkLogic Timestamp: " + s.getCurrentServerPointInTime());
+        } catch (RequestException e) {
+            LOG.error("Exception occurred:", e);
+        }
         // TODO - this will be a range query (prop:last-modified) eventually
         StructuredQueryDefinition sqd = new StructuredQueryBuilder().and();
         /*
@@ -111,9 +112,10 @@ public class MarkLogicSourceTask extends SourceTask {
 
         DataMovementManager dmm = client.newDataMovementManager();
         QueryBatcher batcher = dmm.newQueryBatcher(sqd);
-        batcher.onUrisReady(batch -> {
+
+        batcher.withThreadCount(1).onUrisReady(batch -> {
                     for (String uri : batch.getItems()) {
-                        LOG.info("URI: " + uri);
+                        LOG.debug("URI: " + uri);
                     }
                 }
         ).onQueryFailure(e -> LOG.error("Failure processing batch: ", e));
@@ -122,14 +124,14 @@ public class MarkLogicSourceTask extends SourceTask {
         // Wait for the job to complete, and then stop it.
         batcher.awaitCompletion();
         dmm.stopJob(batcher);
-        // fixme - just keeping this artifical sleep here to stop the log being filled with poll log messages
+        // fixme - just keeping this artificial sleep here to stop the log being filled with poll log messages
         Thread.sleep(10000);
         return null;
     }
 
     @Override
     public void stop() {
-        LOG.info("*** MarkLogicSourceTask - stop called ***");
+        LOG.info("MarkLogicSourceTask: stop() called");
     }
 
     public String version() {

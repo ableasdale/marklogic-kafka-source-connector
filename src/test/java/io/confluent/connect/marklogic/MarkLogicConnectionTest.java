@@ -49,7 +49,7 @@ public class MarkLogicConnectionTest {
 
     @Test
     public void ConnectionTest() {
-        DatabaseClient client = DatabaseClientFactory.newClient(MarkLogicSourceConfig.CONNECTION_HOST_DEFAULT, MarkLogicSourceConfig.CONNECTION_PORT_DEFAULT, "Meters",
+        DatabaseClient client = DatabaseClientFactory.newClient(MarkLogicSourceConfig.CONNECTION_HOST_DEFAULT, Integer.parseInt(MarkLogicSourceConfig.CONNECTION_PORT_DEFAULT), "Meters",
                 new DatabaseClientFactory.DigestAuthContext(MarkLogicSourceConfig.CONNECTION_USER_DEFAULT, MarkLogicSourceConfig.CONNECTION_PASSWORD_DEFAULT));
         assertEquals("Meters", client.getDatabase());
         assertTrue(client.checkConnection().isConnected());
@@ -62,7 +62,7 @@ public class MarkLogicConnectionTest {
         batcher.onUrisReady(batch -> {
                     assertEquals(StringUtils.left(String.valueOf(batch.getTimestamp().toInstant().getEpochSecond()), 4), StringUtils.left(String.valueOf(Instant.now().getEpochSecond()), 4));
                     LOG.debug(String.format("Server Timestamp: %s", batch.getTimestamp().toString()));
-                    // TODO - this always seems to be -1 and really shouldn't be (the query can't be in update mode, right?) - not a problem that we can deal with, but disappointing nonetheless: LOG.info("TS:"+batch.getServerTimestamp());
+                    // NOTE - this always seems to be -1 and really shouldn't be (the query can't be in update mode, right?) - not a problem that we can deal with, but disappointing nonetheless: LOG.info("TS:"+batch.getServerTimestamp());
                     for (String uri : batch.getItems()) {
                         LOG.debug("URI: " + uri);
                     }
@@ -73,6 +73,5 @@ public class MarkLogicConnectionTest {
         // Wait for the job to complete, and then stop it.
         batcher.awaitCompletion();
         dmm.stopJob(batcher);
-
     }
 }

@@ -2,24 +2,16 @@ package io.confluent.connect.marklogic;
 
 import org.apache.kafka.common.config.ConfigValue;
 import org.apache.kafka.connect.connector.ConnectorContext;
-import org.easymock.EasyMock;
 import org.easymock.EasyMockSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import org.easymock.EasyMock;
-import org.easymock.EasyMockSupport;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 public class MarkLogicSourceConnectorTest extends EasyMockSupport {
 
     private static final String SINGLE_TOPIC = "test";
@@ -37,7 +29,7 @@ public class MarkLogicSourceConnectorTest extends EasyMockSupport {
         sourceProperties = new HashMap<>();
         sourceProperties.put(MarkLogicSourceConfig.TOPIC_CONFIG, SINGLE_TOPIC);
         sourceProperties.put(MarkLogicSourceConfig.CONNECTION_HOST, MarkLogicSourceConfig.CONNECTION_HOST_DEFAULT);
-        sourceProperties.put(MarkLogicSourceConfig.CONNECTION_PORT, Integer.toString(MarkLogicSourceConfig.CONNECTION_PORT_DEFAULT));
+        sourceProperties.put(MarkLogicSourceConfig.CONNECTION_PORT, MarkLogicSourceConfig.CONNECTION_PORT_DEFAULT);
         sourceProperties.put(MarkLogicSourceConfig.CONNECTION_USER, MarkLogicSourceConfig.CONNECTION_USER_DEFAULT);
         sourceProperties.put(MarkLogicSourceConfig.CONNECTION_PASSWORD, MarkLogicSourceConfig.CONNECTION_PASSWORD_DEFAULT);
     }
