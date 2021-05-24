@@ -27,13 +27,13 @@ public class MarkLogicXccContentSourceProvider {
 
     private MarkLogicXccContentSourceProvider() {
         LOG.debug("Creating the MarkLogic ContentSource...");
-
         try {
-            URI uri = new URI(generateXdbcConnectionUri("admin", "admin", "localhost", 8000));
+            // TODO - get the *configuration object* or use the defaults to remove these
+            URI uri = new URI(generateXdbcConnectionUri(MarkLogicSourceConfig.CONNECTION_USER_DEFAULT, MarkLogicSourceConfig.CONNECTION_PASSWORD_DEFAULT, MarkLogicSourceConfig.CONNECTION_HOST_DEFAULT, MarkLogicSourceConfig.CONNECTION_PORT_DEFAULT));
             contentSource = ContentSourceFactory
                     .newContentSource(uri);
         } catch (URISyntaxException | XccConfigException e) {
-            LOG.error("Exception",e);
+            LOG.error("Exception encountered: ",e);
         }
 
     }
@@ -56,11 +56,11 @@ public class MarkLogicXccContentSourceProvider {
         return MarkLogicContentSourceProviderHolder.INSTANCE;
     }
 
-    public static ContentSource getContentSource() {
-        return MarkLogicContentSourceProviderHolder.INSTANCE.contentSource;
+    private static ContentSource getContentSource() {
+        return getInstance().contentSource;
     }
 
     public static Session getSession(String name) {
-        return MarkLogicContentSourceProviderHolder.INSTANCE.contentSource.newSession(name);
+        return getContentSource().newSession(name);
     }
 }
