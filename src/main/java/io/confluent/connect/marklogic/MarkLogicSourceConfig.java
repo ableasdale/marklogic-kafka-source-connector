@@ -34,9 +34,11 @@ public class MarkLogicSourceConfig extends AbstractConfig {
     private static final String CONNECTION_PORT_DOC = "MarkLogic Application Server port";
 	
 	public static final String CONNECTION_USER = "ml.connection.user";
+	protected static final String CONNECTION_USER_DEFAULT = "admin";
 	private static final String CONNECTION_USER_DOC = "MarkLogic connection user.";
 
 	public static final String CONNECTION_PASSWORD = "ml.connection.password";
+	protected static final String CONNECTION_PASSWORD_DEFAULT = "admin";
 	private static final String CONNECTION_PASSWORD_DOC = "MarkLogic connection password";
 
 	public static final String BATCH_SIZE = "ml.batch.size";

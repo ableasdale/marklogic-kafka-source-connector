@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,8 @@ public class MarkLogicSourceConnectorTest extends EasyMockSupport {
         sourceProperties.put(MarkLogicSourceConfig.TOPIC_CONFIG, SINGLE_TOPIC);
         sourceProperties.put(MarkLogicSourceConfig.CONNECTION_HOST, MarkLogicSourceConfig.CONNECTION_HOST_DEFAULT);
         sourceProperties.put(MarkLogicSourceConfig.CONNECTION_PORT, Integer.toString(MarkLogicSourceConfig.CONNECTION_PORT_DEFAULT));
+        sourceProperties.put(MarkLogicSourceConfig.CONNECTION_USER, MarkLogicSourceConfig.CONNECTION_USER_DEFAULT);
+        sourceProperties.put(MarkLogicSourceConfig.CONNECTION_PASSWORD, MarkLogicSourceConfig.CONNECTION_PASSWORD_DEFAULT);
     }
 
     @Test
@@ -44,7 +47,7 @@ public class MarkLogicSourceConnectorTest extends EasyMockSupport {
         replayAll();
         List<ConfigValue> configValues = connector.config().validate(sourceProperties);
         for (ConfigValue val : configValues) {
-            assertEquals(0, val.errorMessages().size(), "Config property errors: " + val.errorMessages());
+            assertEquals(0, val.errorMessages().size(), MessageFormat.format("Config property errors: {0}", val.errorMessages()));
         }
         verifyAll();
     }

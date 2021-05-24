@@ -34,17 +34,14 @@ public class MarkLogicConnectionTest {
             URL url = new URL("http://localhost:7997");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-            LOG.info("Healthcheck HTTP response: "+con.getResponseMessage());
-            LOG.info("Healthcheck HTTP response code: "+con.getResponseCode());
-
+            LOG.debug("Healthcheck HTTP response: "+con.getResponseMessage());
+            LOG.debug("Healthcheck HTTP response code: "+con.getResponseCode());
             BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String responseBody = br.lines().collect(Collectors.joining());
-            LOG.info("Healthcheck HTTP Response Body: "+ responseBody);
+            LOG.debug("Healthcheck HTTP Response Body: "+ responseBody);
             assertEquals("<html><body>Healthy</body></html>", responseBody);
             assertEquals(200, con.getResponseCode());
             assertEquals("OK", con.getResponseMessage());
-        } catch (ProtocolException | MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,7 +69,7 @@ public class MarkLogicConnectionTest {
                     }
                 }
         )
-                .onQueryFailure(exception -> exception.printStackTrace());
+                .onQueryFailure(Throwable::printStackTrace);
         // *** Step 4: Submit the DMSDK job ***
         dmm.startJob(batcher);
         // Wait for the job to complete, and then stop it.

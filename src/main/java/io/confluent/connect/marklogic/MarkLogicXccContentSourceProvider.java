@@ -32,9 +32,7 @@ public class MarkLogicXccContentSourceProvider {
             URI uri = new URI(generateXdbcConnectionUri("admin", "admin", "localhost", 8000));
             contentSource = ContentSourceFactory
                     .newContentSource(uri);
-        } catch (URISyntaxException e) {
-            LOG.error("Exception",e);
-        } catch (XccConfigException e) {
+        } catch (URISyntaxException | XccConfigException e) {
             LOG.error("Exception",e);
         }
 
@@ -42,11 +40,11 @@ public class MarkLogicXccContentSourceProvider {
 
     private String generateXdbcConnectionUri(String user, String pass, String host, int port) {
         StringBuilder sb = new StringBuilder();
-        sb.append("xdbc://").append(user).append(":")
+        sb.append("xcc://").append(user).append(":")
                 .append(pass).append("@")
                 .append(host).append(":")
                 .append(port);
-        LOG.info("Conn: " + sb.toString());
+        LOG.debug(String.format("Conn: %s", sb));
         return sb.toString();
     }
 
